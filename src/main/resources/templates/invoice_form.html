@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org "  lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Create new Invoice</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/webjars/bootstrap/css/bootstrap.min.css}"/>
+    <link th:rel="stylesheet" th:href="@{assets/bootstrap-datepicker/css/bootstrap-datepicker.css}"/>
+    <link th:rel="stylesheet" th:href="@{assets/bootstrap-datepicker/css/bootstrap-datepicker.standalone.css}"/>
+    <link th:rel="stylesheet" th:href="@{webjars/bootstrap/4.0.0-2/css/bootstrap.min.css} "/>
+    <link th:rel="stylesheet" th:href="@{webjars/font-awesome/5.11.2/css/all.css} "/>
+
+    <script th:src="@{/webjars/jquery/jquery.min.js}"></script>
+    <script th:src="@{/webjars/popper.js/umd/popper.min.js}"></script>
+    <script th:src="@{/webjars/bootstrap/js/bootstrap.min.js}"></script>
+    <script th:src="@{assets/bootstrap-datepicker/js/bootstrap-datepicker.js}"></script>
+
+</head>
+<body>
+<div th:replace="fragment-message"></div>
+<div class="container text-center py-4">
+    <div th:if="${invoice.id == null}"><h1>Create new Invoice</h1></div>
+    <div th:unless="${invoice.id == null}"><h1>Edit Invoice</h1></div>
+    <div>
+        <form th:action="@{/invoices/save}" th:object="${invoice}" method="post"
+              style="max-width: 1000px; margin: 0 auto">
+            <input type="hidden" th:field="*{id}" th:value="${invoice.id}">
+            <div class="m-3">
+                <div class="form-group row">
+                    <label class="col-form-label col-sm-4">Invoice Date:</label>
+
+                    <div class="col-sm-8 input-group date">
+                        <input type="date" class="form-control" th:field="*{createDate}" autocomplete="off" />
+
+                        <div class="input-group-append">
+                            <span class="input-group-text"><i class="far fa-calendar-alt"></i></span>
+                        </div>
+                        <p th:if="${#fields.hasErrors('createDate')}" th:errors="*{createDate}" class="alert alert-danger"></p>
+                    </div>
+
+
+                </div>
+
+                <div class="form-group row">
+                    <label class="col-form-label col-sm-4">Invoice Description:</label>
+
+                    <div class="col-sm-8">
+                        <input type="text" th:field="*{description}" class="form-control" />
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label class="col-form-label col-sm-4">Contractor:</label>
+
+                    <div class="col-sm-6">
+                        <select th:field="*{contractor}" class="form-control" >
+                            <th:block th:each="contractor : ${contractors}">
+                                <option th:text="${contractor.name}" th:value="${contractor.id}"/>
+                            </th:block>
+                        </select>
+<!--                        <p th:if="${error_contractor != null}"  th:text="${error_contractor}" class="alert alert-danger"></p>-->
+                        <p th:if="${#fields.hasErrors('contractor')}" th:errors="*{contractor}" class="alert alert-danger"></p>
+                    </div>
+
+                </div>
+                <div class="form-group row">
+                    <label class="col-form-label col-sm-4">Product:</label>
+
+                    <div class="col-sm-6">
+                        <select id="prx" class="form-control" >
+                            <th:block th:each="product : ${products}">
+                                <option th:text="${product.name}" th:value="${product.id}"/>
+                            </th:block>
+                        </select>
+                    </div>
+                    <div class="col-sm-2">
+                        <button type="button" class="btn btn-info " onclick="addProductLine()">Add</button>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="container">
+                        <table id="loadProductItems" class="table table-sm table-striped table-hover">
+                            <thead>
+                            <tr>
+                                <th style="width: 15%">Prod Id</th>
+                                <th style="width: 50%">Name of product</th>
+                                <th style="width: 15%">Quantity</th>
+                                <th style="width: 20%">[delete]</th>
+                            </tr>
+                            </thead>
+
+                            <tbody id="templateInvoiceItem">
+                            <th:block th:each="detail : ${invoice.details}">
+                                <tr th:id="row_ + ${detail.product.id}">
+                                    <td><input type="text" th:value="${detail.product.id}" name="item_id[]" readonly
+                                               style="width: 40px"></input></td>
+                                    <td>[[${detail.product.name}]]</td>
+                                    <td><input type="number" th:value="${detail.quantity}" name="quantity[]"
+                                               th:id="quantity_ + ${detail.product.id}"
+                                               min="1" max="999" style="width: 60px"></td>
+                                    <td>
+                                        <button class="btn btn-danger btn-xs"
+                                                th:onclick="deleteLine([[${detail.product.id}]])">
+                                            <i class="material-icons">delete</i>
+                                        </button>
+                                    </td>
+
+                                </tr>
+                            </th:block>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+            </div>
+            <div class="text-center p-3">
+                <button type="submit" class="btn btn-primary">Save</button>
+            </div>
+        </form>
+
+        <div class="form-group row">
+            <a class="nav-link active  col-sm-2" href="../">Back</a>
+        </div>
+    </div>
+</div>
+<script>
+    $('.input-group.date').datepicker({
+        autoclose: true,
+        todayHighlight: true
+    });
+
+    function hasProduct(id) {
+        let result = false;
+        debugger
+        $("input[name='item_id[]']").each(function () {
+            if (parseInt(id) == parseInt($(this).val())) {
+                result = true;
+            }
+        });
+        return result;
+    };
+
+
+    function deleteLine(id) { $("#row_" + id).remove();};
+
+    function incrementQuantity(id) {
+        let quantity = $("#quantity_" + id).val() ? parseInt($("#quantity_" + id).val()) : 0;
+        $("#quantity_" + id).val(++quantity);
+    };
+
+    function addProductLine() {
+        let selectedId = $("#prx").val()
+        if (selectedId) {
+            let selectedName = $('#prx :selected').text()
+            let new_line = `<tr id="row_{ID}">
+                            <td><input type = "text" value="{ID}" name = "item_id[]" readOnly style = "width: 50px"></td>
+                            <td>{NAME}</td>
+                            <td><input type="number" value="1" name="quantity[]" id="quantity_{ID}"  min="1" max="999" style="width: 50px"></td>
+                            <td><button class="btn btn-danger btn-xs" onclick="deleteLine({ID})"><i class="material-icons">delete</i></button></td>
+                     </tr>`.replace(/{ID}/g, selectedId).replace(/{NAME}/g, selectedName)
+
+            if (hasProduct(selectedId)) {
+                incrementQuantity(selectedId);
+            } else {
+                $("#loadProductItems tbody").append(new_line);
+            }
+        } else{
+            alert("Select the product !")
+        }
+    }
+</script>
+</body>
+</html>

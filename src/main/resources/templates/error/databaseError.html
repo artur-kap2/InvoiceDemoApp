@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org " lang="en">
+<meta charset="UTF-8">
+<head >
+    <link rel="stylesheet" type="text/css" th:href="@{/webjars/bootstrap/css/bootstrap.min.css}"/>
+</head>
+    <body class="container">
+        <h1>Invoice Demo App -> Database Error</h1>
+        <p>An data base  error has occurred accessing:</p>
+        <p>
+            <code th:text="${#httpServletRequest.requestURL}">Request URL</code>
+        </p>
+
+        <div th:if="${ex} or ${exception} or (${message} and ${message.length() != 0})">
+                <b>Cause:</b> <span th:if="${ex}" th:text="${ex}">exception ...</span>
+                <span th:if="${exception}" th:text="${exception}">exception ...</span><br>
+                <b>Details:</b>
+                <span th:if="${message} and ${message.length() != 0}" th:text="${message}">message ...</span>
+        </div>
+
+        <p
+            th:unless="${ex} or ${exception} or (${message} and ${message.length() != 0})">
+            Cause unknown (no exception details available)
+        </p>
+
+
+    <hr/>
+
+    </body>
+</html>

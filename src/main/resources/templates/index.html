@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org " lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>InvoiceDemo Homepage</title>
+  <link rel="stylesheet" type="text/css" th:href="@{/webjars/bootstrap/css/bootstrap.min.css}"/>
+  <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.css"></link>
+</head>
+<body>
+<div class="container text-center" >
+  <div><h1>InvoiceDemo App</h1></div>
+  <div style="margin-top: 40px">
+    <div class="p-2 align-self-center"><a class="h2" th:href="@{/contractors}">Contractors list</a></div>
+    <div class="p-2 align-self-center"><a class="h2" th:href="@{/contractors/new}">Create new Contractor</a></div>
+    <div class="p-2 align-self-center"><a class="h2" th:href="@{/products}">Products list</a></div>
+    <div class="p-2 align-self-center"><a class="h2" th:href="@{/products/new}">Create new product</a></div>
+    <div class="p-2 align-self-center"><a class="h2" th:href="@{/invoices}">Invoices list</a></div>
+    <div class="p-2 align-self-center"><a class="h2" th:href="@{/invoices/new}">Create new invoice</a></div>
+  </div>
+</div>
+
+</body>
+</html>

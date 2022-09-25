@@ -14,6 +14,10 @@ import java.util.List;
 @Table(name = "invoices")
 @Data
 @NoArgsConstructor
+@NamedStoredProcedureQuery(name = "Invoice.GET_NEXT_NUMBER",
+        procedureName = "GET_NEXT_NUMBER", parameters = {
+        @StoredProcedureParameter(mode = ParameterMode.IN, name = "YYYY", type = Integer.class),
+        @StoredProcedureParameter(mode = ParameterMode.OUT, name = "ret_val", type = Long.class)})
 public class Invoice {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -36,6 +40,8 @@ public class Invoice {
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "invoices_id")
     private List<InvoiceDetail> details = new ArrayList<>();
+
+    private String number;
 
     @Override
     public String toString() {

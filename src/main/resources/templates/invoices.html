@@ -19,6 +19,7 @@
             <tr>
                 <th>ID</th>
                 <th>Created on</th>
+                <th>Invoice number</th>
                 <th>Description</th>
                 <th></th>
             </tr>
@@ -28,6 +29,7 @@
                 <tr>
                     <td>[[${invoice.id}]]</td>
                     <td>[[${#temporals.format(invoice.createDate,'dd/MM/YYYY')}]]</td>
+                    <td>[[${invoice.number}]]</td>
                     <td>[[${invoice.description}]]</td>
 
                     <td>

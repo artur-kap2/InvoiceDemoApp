@@ -35,6 +35,11 @@
                             <span class="input-group-text"><i class="far fa-calendar-alt"></i></span>
                         </div>
                         <p th:if="${#fields.hasErrors('createDate')}" th:errors="*{createDate}" class="alert alert-danger"></p>
+
+                        <div>
+                            <input type="text" class="form-control" th:field="*{number}" readonly />
+                        </div>
+
                     </div>
 
 

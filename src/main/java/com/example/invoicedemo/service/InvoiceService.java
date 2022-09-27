@@ -22,7 +22,7 @@ public class InvoiceService {
 
     @Transactional
     public void saveInvoice(Invoice invoice) {
-        if (invoice.getDetails().size() > 0 ){
+        if (invoice.getDetails().size() > 0  && invoice.getNumber().isEmpty()){
             Integer year = invoice.getCreateDate().getYear();
             invoice.setNumber(String.format("%d-%07d",year,invoiceRepository.GET_NEXT_NUMBER(year)));
         }
